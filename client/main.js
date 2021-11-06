@@ -1,6 +1,12 @@
 let fortuneText = document.getElementById('fortuneText')
-let createFortuneText = document.getElementById('createFortuneText')
+let createFortuneInput = document.getElementById('createFortuneInput')
 let createFortune = document.getElementById('createFortune')
+let fateInput = document.getElementById('changeFateInput')
+let changeFateBtn = document.getElementById('changeFateButton')
+let deleteBtn = document.getElementById('deleteFortuneButton')
+
+
+let currentFortuneId = 1
 
 document.getElementById("complimentButton").onclick = function () {
     axios.get("http://localhost:4000/api/compliment/")
@@ -15,28 +21,57 @@ document.getElementById('fortuneButton').onclick = function(){
     .then(function (response){
         console.log(response.data)
         fortuneText.textContent = ''
-        fortuneText.textContent = response.data
+        fortuneText.textContent = response.data.fortune
+        return currentFortuneId = response.data.id
     })
 }
 
-createFortune.addEventListener('click', createFortunePost)
 
 function createFortunePost(){
-    console.log('clicked')
-    axios.post("http://localhost:4000/api/fortuneTell",{"fortune": "how do you get this to work?"})
+    axios.post("http://localhost:4000/api/fortuneTell",
+    {
+        "fortune": createFortuneInput.value
+})
     .then((res) => {
+        alert('Fortune predicted')
+    })
+}
+createFortune.addEventListener('click', createFortunePost)
+
+
+function fate(){
+    axios.put(`http://localhost:4000/api/fortune/${currentFortuneId}`,
+     {
+         "fortune": fateInput.value
+     })
+     .then((res) => {
+         alert('Fortune updated')
+         fortuneText.textContent
+     })
+}
+
+changeFateBtn.addEventListener('click', fate)
+
+function deleteFortune(){
+    axios.delete(`http://localhost:4000/api/fortune/${currentFortuneId}`)
+    .then((res) => {
+        alert("That fortune isn't true")
         console.log(res.data)
     })
 }
+deleteBtn.addEventListener('click', deleteFortune)
 
+// goals example
+// const addGoals = () => {
+//     console.log(goalInput.value)
+//     let body = goalInput.value
+//     axios.post('http://localhost:4000/api/goals', {data: body})
+//     .then(res => {
+//         alert('goal added')
 
-// const createMovie = body => axios.post(baseURL, body).then(moviesCallback).catch(errCallback)
-
-// document.getElementById('createFortune').onclick = function(){
-//     console.log('clicked')
-//     axios.post('http://localhost:4000/api/fortuneCreation', body)
-//     .then((res) => {
-//         console.log(res)
 //     })
-//     .catch(err => console.error(err))
 // }
+// let goalBtn = document.getElementById('goal-button')
+// let goalInput = document.getElementById('goal-name')
+
+// goalBtn.addEventListener('click', addGoals)
